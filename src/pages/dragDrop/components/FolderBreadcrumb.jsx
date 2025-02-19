@@ -3,19 +3,19 @@ import { NavigateNext } from "@mui/icons-material";
 import DraggableAndDroppableItem from "../../../components/dndKit/DraggableAndDroppableItem";
 
 function FolderBreadcrumb({
-  selectedFolderPath = [],
-  handleSelectNode = () => {},
+  activeFolderPath = [],
+  handleSetActiveNode = () => {},
 }) {
   const FolderBreadcrumbItem = ({ folderItem, index }) => {
     return (
       <div
         key={folderItem.id}
         onClick={() => {
-          handleSelectNode(folderItem.id);
+          handleSetActiveNode(folderItem.id);
         }}
       >
         <DraggableAndDroppableItem id={`breadcrumb+${folderItem.id}`}>
-          {index !== selectedFolderPath.length - 1 ? (
+          {index !== activeFolderPath.length - 1 ? (
             <Link
               component="button"
               variant="body2"
@@ -44,7 +44,7 @@ function FolderBreadcrumb({
           borderRadius: "4px",
         }}
       >
-        {selectedFolderPath.map((folderItem, index) => (
+        {activeFolderPath.map((folderItem, index) => (
           <FolderBreadcrumbItem
             key={folderItem.id}
             index={index}

@@ -15,9 +15,9 @@ const FolderDragAndDrop = () => {
   const [folderStructure, setFolderStructure] = useState([
     ...folderStructureData,
   ]);
-  const [selectFolderDetails, setSelectFolderDetails] = useState({});
-  const [selectedFolderPath, setSelectedFolderPath] = useState([]);
-  const [openFolderIdList, setOpenFolderIdList] = useState([]); // Tracks open folders by their IDs
+  const [activeFolderDetails, setActiveFolderDetails] = useState({});
+  const [activeFolderPath, setActiveFolderPath] = useState([]);
+  const [activeFolderIdList, setActiveFolderIdList] = useState([]); // Tracks open folders by their IDs
 
   useEffect(() => {
     handleInitialRendering();
@@ -26,7 +26,7 @@ const FolderDragAndDrop = () => {
 
   const handleInitialRendering = () => {
     const initialId = folderStructure?.[0]?.id;
-    handleSelectNode(initialId);
+    handleSetActiveNode(initialId);
     handleToggleFolder(initialId);
   };
 
@@ -34,24 +34,24 @@ const FolderDragAndDrop = () => {
     let newOpenFolderIdList = [];
 
     if (isOpenMandatory) {
-      newOpenFolderIdList = openFolderIdList.includes(id)
-        ? [...openFolderIdList]
-        : [...openFolderIdList, id];
+      newOpenFolderIdList = activeFolderIdList.includes(id)
+        ? [...activeFolderIdList]
+        : [...activeFolderIdList, id];
     } else {
-      newOpenFolderIdList = openFolderIdList.includes(id)
-        ? openFolderIdList.filter((folderId) => folderId !== id)
-        : [...openFolderIdList, id];
+      newOpenFolderIdList = activeFolderIdList.includes(id)
+        ? activeFolderIdList.filter((folderId) => folderId !== id)
+        : [...activeFolderIdList, id];
     }
 
-    setOpenFolderIdList(newOpenFolderIdList);
+    setActiveFolderIdList(newOpenFolderIdList);
   };
 
-  const handleSelectNode = (id, folderStructureJson = folderStructure) => {
+  const handleSetActiveNode = (id, folderStructureJson = folderStructure) => {
     const path = findPathById(folderStructureJson, id);
-    setSelectedFolderPath(path);
+    setActiveFolderPath(path);
 
     const details = findDetailsById(folderStructureJson, id);
-    setSelectFolderDetails(details);
+    setActiveFolderDetails(details);
 
     handleToggleFolder(id, true);
   };
@@ -65,7 +65,7 @@ const FolderDragAndDrop = () => {
     const overId = over.id;
     const updatedStructure = moveNodeByIds(folderStructure, activeId, overId);
     setFolderStructure(updatedStructure);
-    handleSelectNode(selectFolderDetails.id, updatedStructure);
+    handleSetActiveNode(activeFolderDetails.id, updatedStructure);
   };
 
   const handleDropHold = (event) => {
@@ -87,23 +87,23 @@ const FolderDragAndDrop = () => {
               <FolderTree
                 key={node.id}
                 node={node}
-                openFolderIdList={openFolderIdList}
-                selectedFolderPath={selectedFolderPath}
+                activeFolderIdList={activeFolderIdList}
+                activeFolderPath={activeFolderPath}
                 handleToggleFolder={handleToggleFolder}
-                handleSelectNode={handleSelectNode}
+                handleSetActiveNode={handleSetActiveNode}
               />
             ))}
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <FolderBreadcrumb
-            selectedFolderPath={selectedFolderPath}
-            handleSelectNode={handleSelectNode}
+            activeFolderPath={activeFolderPath}
+            handleSetActiveNode={handleSetActiveNode}
           />
           <div>
             <TableView
-              selectFolderDetails={selectFolderDetails}
-              handleSelectNode={handleSelectNode}
+              activeFolderDetails={activeFolderDetails}
+              handleSetActiveNode={handleSetActiveNode}
             />
           </div>
         </div>

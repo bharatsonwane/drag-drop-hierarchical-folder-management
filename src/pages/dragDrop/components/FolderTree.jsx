@@ -4,11 +4,11 @@ import DraggableAndDroppableItem from "../../../components/dndKit/DraggableAndDr
 
 const FolderTree = ({
   node,
-  openFolderIdList,
+  activeFolderIdList,
   handleToggleFolder,
-  handleSelectNode,
+  handleSetActiveNode,
 }) => {
-  const isOpen = openFolderIdList.includes(node.id);
+  const isOpen = activeFolderIdList.includes(node.id);
 
   return (
     <>
@@ -33,7 +33,7 @@ const FolderTree = ({
             <DraggableAndDroppableItem id={node.id}>
               <span
                 onClick={() => {
-                  handleSelectNode(node.id);
+                  handleSetActiveNode(node.id);
                 }}
               >
                 {node.type === "folder" ? "📁" : "📄"} {node.name}
@@ -47,9 +47,9 @@ const FolderTree = ({
                 <FolderTree
                   key={child.id}
                   node={child}
-                  openFolderIdList={openFolderIdList}
+                  activeFolderIdList={activeFolderIdList}
                   handleToggleFolder={handleToggleFolder}
-                  handleSelectNode={handleSelectNode}
+                  handleSetActiveNode={handleSetActiveNode}
                 />
               ))}
             </div>

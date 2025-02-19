@@ -3,7 +3,7 @@ import { TableCell, TableRow } from "@mui/material";
 import LongMenu from "./MenuItem";
 import DraggableItem from "./dndKit/DraggableItem";
 
-function TableRowView({ index, handleSelectNode, file }) {
+function TableRowView({ index, handleSetActiveNode, file }) {
   return (
     <DraggableItem id={`table+${file.id}`}>
       <TableRow
@@ -11,7 +11,7 @@ function TableRowView({ index, handleSelectNode, file }) {
         // style={{ overflowX: "auto" }}
         onClick={() => {
           if (file.type === "folder") {
-            handleSelectNode(file.id);
+            handleSetActiveNode(file.id);
           }
         }}
       >
