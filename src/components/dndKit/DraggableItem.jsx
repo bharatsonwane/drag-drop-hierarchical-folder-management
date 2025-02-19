@@ -9,7 +9,6 @@ const DraggableItem = ({ id, data, children }, ref) => {
   const itemStyle = {
     transform: CSS.Transform.toString(transform),
     transition,
-    display: "flex",
     cursor: "grab",
   };
 
@@ -30,9 +29,9 @@ const DraggableItem = ({ id, data, children }, ref) => {
           ...listeners,
         })
       ) : !!children ? (
-        <span ref={setNodeRef} style={itemStyle} {...attributes} {...listeners}>
+        <div ref={setNodeRef} style={itemStyle} {...attributes} {...listeners}>
           {children}
-        </span>
+        </div>
       ) : null}
     </>
   );

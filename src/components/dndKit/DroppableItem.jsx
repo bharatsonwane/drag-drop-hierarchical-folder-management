@@ -26,9 +26,9 @@ const DroppableItem = ({ id, data, children }, ref) => {
           style: { ...itemStyle, ...children.props.style },
         })
       ) : !!children ? (
-        <span ref={setNodeRef} style={itemStyle}>
+        <div ref={setNodeRef} style={itemStyle}>
           {children}
-        </span>
+        </div>
       ) : null}
     </>
   );

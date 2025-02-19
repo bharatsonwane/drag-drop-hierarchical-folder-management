@@ -78,7 +78,6 @@ const FolderDragAndDrop = () => {
     <DndKitContext
       onDragEnd={handleDragEnd}
       onDropHold={handleDropHold}
-      items={folderStructure}
     >
       <div style={{ display: "flex", gap: 30 }}>
         <div style={{ minWidth: 200 }}>

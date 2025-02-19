@@ -44,14 +44,9 @@ const DraggableAndDroppableItem = ({ id, children }, ref) => {
           ...listeners,
         })
       ) : (
-        <span
-          ref={combinedRef}
-          style={itemStyle}
-          {...attributes}
-          {...listeners}
-        >
+        <div ref={combinedRef} style={itemStyle} {...attributes} {...listeners}>
           {children}
-        </span>
+        </div>
       )}
     </>
   );

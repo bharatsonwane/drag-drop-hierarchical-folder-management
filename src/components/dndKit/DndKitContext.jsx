@@ -6,15 +6,9 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { SortableContext } from "@dnd-kit/sortable";
 
 function DndKitContext(props) {
-  const {
-    items = [],
-    onDragEnd = () => {},
-    onDropHold = () => {},
-    children,
-  } = props;
+  const { onDragEnd = () => {}, onDropHold = () => {}, children } = props;
 
   const holdTimeoutRef = useRef(null);
   const currentDroppableRef = useRef(null);
