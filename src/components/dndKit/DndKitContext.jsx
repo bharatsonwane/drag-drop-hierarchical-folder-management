@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import {
   DndContext,
+  DragOverlay,
   PointerSensor,
   closestCenter,
   useSensor,
@@ -8,10 +9,18 @@ import {
 } from "@dnd-kit/core";
 
 function DndKitContext(props) {
-  const { onDragEnd = () => {}, onDropHold = () => {}, children } = props;
+  const {
+    onDragEnd = () => {},
+    onDropHold = () => {},
+    children,
+    selectedNodes = [],
+    handleMultiSelectUnselectNode = () => {},
+  } = props;
 
   const holdTimeoutRef = useRef(null);
   const currentDroppableRef = useRef(null);
+
+  const [dragging, isDragging] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -21,9 +30,20 @@ function DndKitContext(props) {
     })
   );
 
-  const handleDragStart = () => {
+  const handleDragStart = (event) => {
+    console.log("dragStartEvent", event);
+    if (selectedNodes.length === 0) {
+      handleMultiSelectUnselectNode(event.active.data.current);
+    }
+    isDragging(event.active.id);
     // Clear any existing hold timer
     clearTimeout(holdTimeoutRef.current);
+  };
+
+  const handleDragEnd = (event) => {
+    onDragEnd(event);
+    // Clear any existing hold timer
+    isDragging(false);
   };
 
   const handleDragOver = (event) => {
@@ -49,11 +69,20 @@ function DndKitContext(props) {
   return (
     <DndContext
       sensors={sensors}
-      onDragEnd={onDragEnd}
+      onDragEnd={handleDragEnd}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
     >
       {children}
+
+      {dragging && (
+        <DragOverlay>
+          <div>
+            {" "}
+            {selectedNodes.map((nodeItem) => nodeItem.name).join(", ")}
+          </div>
+        </DragOverlay>
+      )}
     </DndContext>
   );
 }

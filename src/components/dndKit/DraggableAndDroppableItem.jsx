@@ -2,15 +2,19 @@ import React, { forwardRef } from "react";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 
-const DraggableAndDroppableItem = ({ id, children }, ref) => {
+const DraggableAndDroppableItem = ({ id, data, children }, ref) => {
   const {
     attributes,
     listeners,
     setNodeRef: setDraggableNodeRef,
     transform,
     transition,
-  } = useDraggable({ id });
-  const { setNodeRef: setDroppableNodeRef, isOver } = useDroppable({ id });
+  } = useDraggable({ id, data });
+
+  const { setNodeRef: setDroppableNodeRef, isOver } = useDroppable({
+    id,
+    data,
+  });
 
   const combinedRef = (node) => {
     setDraggableNodeRef(node);

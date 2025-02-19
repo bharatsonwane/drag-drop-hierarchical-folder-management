@@ -10,7 +10,12 @@ import { MoreVert } from "@mui/icons-material";
 
 import TableRowView from "./TableRowView";
 
-const TableView = ({ activeFolderDetails, handleSetActiveNode }) => {
+const TableView = ({
+  activeFolderDetails,
+  handleSetActiveNode = () => {},
+  selectedNodes,
+  handleMultiSelectUnselectNode = () => {},
+}) => {
   return (
     <div>
       <Table>
@@ -33,6 +38,8 @@ const TableView = ({ activeFolderDetails, handleSetActiveNode }) => {
               key={file.id}
               index={index}
               handleSetActiveNode={handleSetActiveNode}
+              selectedNodes={selectedNodes}
+              handleMultiSelectUnselectNode={handleMultiSelectUnselectNode}
               file={file}
             />
           ))}

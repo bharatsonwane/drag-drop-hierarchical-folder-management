@@ -18,6 +18,7 @@ const FolderDragAndDrop = () => {
   const [activeFolderDetails, setActiveFolderDetails] = useState({});
   const [activeFolderPath, setActiveFolderPath] = useState([]);
   const [activeFolderIdList, setActiveFolderIdList] = useState([]); // Tracks open folders by their IDs
+  const [selectedNodes, setSelectedNodes] = useState([]);
 
   useEffect(() => {
     handleInitialRendering();
@@ -56,16 +57,36 @@ const FolderDragAndDrop = () => {
     handleToggleFolder(id, true);
   };
 
+  const handleMultiSelectUnselectNode = (node) => {
+    const isNodeSelected = selectedNodes.some(
+      (selectedNode) => selectedNode.id === node.id
+    );
+    if (isNodeSelected) {
+      setSelectedNodes(
+        selectedNodes.filter((selectedNode) => selectedNode.id !== node.id)
+      );
+    } else {
+      setSelectedNodes([...selectedNodes, node]);
+    }
+  };
+
   const handleDragEnd = (event) => {
+    console.log("selectedNodes", selectedNodes);
     const { active, over } = event;
     if (!over) {
       return;
     }
-    const activeId = active.id;
+    // const activeId = active.id;
     const overId = over.id;
-    const updatedStructure = moveNodeByIds(folderStructure, activeId, overId);
+    let updatedStructure = [...folderStructure];
+    selectedNodes.forEach((nodeItem) => {
+      updatedStructure = moveNodeByIds(updatedStructure, nodeItem.id, overId);
+    });
+     
     setFolderStructure(updatedStructure);
     handleSetActiveNode(activeFolderDetails.id, updatedStructure);
+
+    setSelectedNodes([]);
   };
 
   const handleDropHold = (event) => {
@@ -78,6 +99,8 @@ const FolderDragAndDrop = () => {
     <DndKitContext
       onDragEnd={handleDragEnd}
       onDropHold={handleDropHold}
+      selectedNodes={selectedNodes}
+      handleMultiSelectUnselectNode={handleMultiSelectUnselectNode}
     >
       <div style={{ display: "flex", gap: 30 }}>
         <div style={{ minWidth: 200 }}>
@@ -104,6 +127,8 @@ const FolderDragAndDrop = () => {
             <TableView
               activeFolderDetails={activeFolderDetails}
               handleSetActiveNode={handleSetActiveNode}
+              selectedNodes={selectedNodes}
+              handleMultiSelectUnselectNode={handleMultiSelectUnselectNode}
             />
           </div>
         </div>

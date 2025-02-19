@@ -14,7 +14,10 @@ function FolderBreadcrumb({
           handleSetActiveNode(folderItem.id);
         }}
       >
-        <DraggableAndDroppableItem id={`breadcrumb+${folderItem.id}`}>
+        <DraggableAndDroppableItem
+          id={`breadcrumb+${folderItem.id}`}
+          data={folderItem}
+        >
           {index !== activeFolderPath.length - 1 ? (
             <Link
               component="button"

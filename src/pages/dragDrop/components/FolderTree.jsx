@@ -30,7 +30,7 @@ const FolderTree = ({
               </span>
             )}
 
-            <DraggableAndDroppableItem id={node.id}>
+            <DraggableAndDroppableItem id={node.id} data={node}>
               <span
                 onClick={() => {
                   handleSetActiveNode(node.id);
