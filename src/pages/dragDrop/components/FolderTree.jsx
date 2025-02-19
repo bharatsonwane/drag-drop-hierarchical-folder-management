@@ -1,7 +1,6 @@
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"; // Down arrow
 import ArrowRightIcon from "@mui/icons-material/ArrowRight"; // Right arrow
-import DroppableContainer from "../../../components/dndKit/DroppableContainer";
-import DraggableContainer from "../../../components/dndKit/DraggableContainer";
+import DraggableAndDroppableItem from "../../../components/dndKit/DraggableAndDroppableItem";
 
 const FolderTree = ({
   node,
@@ -30,17 +29,16 @@ const FolderTree = ({
                 {isOpen ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
               </span>
             )}
-            <DroppableContainer id={node.id}>
-              <DraggableContainer id={node.id}>
-                <span
-                  onClick={() => {
-                    handleSelectNode(node.id);
-                  }}
-                >
-                  {node.type === "folder" ? "📁" : "📄"} {node.name}
-                </span>
-              </DraggableContainer>
-            </DroppableContainer>
+
+            <DraggableAndDroppableItem id={node.id}>
+              <span
+                onClick={() => {
+                  handleSelectNode(node.id);
+                }}
+              >
+                {node.type === "folder" ? "📁" : "📄"} {node.name}
+              </span>
+            </DraggableAndDroppableItem>
           </div>
 
           {isOpen && node.children && node.children.length > 0 && (

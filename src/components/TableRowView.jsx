@@ -1,7 +1,7 @@
 import { Folder } from "@mui/icons-material";
 import { TableCell, TableRow } from "@mui/material";
 import LongMenu from "./MenuItem";
-import DraggableContainer from "./dndKit/DraggableContainer";
+import DraggableItem from "./dndKit/DraggableItem";
 
 function TableRowView({ index, handleSelectNode, file }) {
   return (
@@ -16,17 +16,14 @@ function TableRowView({ index, handleSelectNode, file }) {
     >
       {/* <div onAuxClick={}></div> */}
       <TableCell>
-        <DraggableContainer
-          id={`table+${file.id}`}
-          style={{ display: "flex", alignItems: "center" }}
-        >
-          {file.type === "folder" ? (
-            <Folder style={{ marginRight: 10 }} />
-          ) : (
-            <></>
-          )}{" "}
-          {file.name}
-        </DraggableContainer>
+        {file.type === "folder" ? (
+          <Folder style={{ marginRight: 10 }} />
+        ) : (
+          <></>
+        )}{" "}
+        <DraggableItem id={`table+${file.id}`}>
+          <span style={{ cursor: "pointer", background:'red' }}>{file.name}</span>
+        </DraggableItem>
       </TableCell>
       <TableCell>{file.size}</TableCell>
       <TableCell>{file.owner}</TableCell>

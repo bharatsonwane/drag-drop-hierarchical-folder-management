@@ -59,7 +59,7 @@ function DndKitContext(props) {
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
     >
-      <SortableContext items={items}>{children}</SortableContext>
+      {children}
     </DndContext>
   );
 }

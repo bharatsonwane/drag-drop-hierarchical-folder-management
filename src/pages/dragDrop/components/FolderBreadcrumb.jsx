@@ -1,7 +1,6 @@
 import { Breadcrumbs, Link, Typography } from "@mui/material";
 import { NavigateNext } from "@mui/icons-material";
-import DroppableContainer from "../../../components/dndKit/DroppableContainer";
-import DraggableContainer from "../../../components/dndKit/DraggableContainer";
+import DraggableAndDroppableItem from "../../../components/dndKit/DraggableAndDroppableItem";
 
 function FolderBreadcrumb({
   selectedFolderPath = [],
@@ -15,23 +14,21 @@ function FolderBreadcrumb({
           handleSelectNode(folderItem.id);
         }}
       >
-        <DroppableContainer id={`breadcrumb+${folderItem.id}`}>
-          <DraggableContainer id={`breadcrumb+${folderItem.id}`}>
-            {index !== selectedFolderPath.length - 1 ? (
-              <Link
-                component="button"
-                variant="body2"
-                onClick={() => {}}
-                underline="hover"
-                sx={{ cursor: "pointer" }}
-              >
-                {folderItem.name}
-              </Link>
-            ) : (
-              <Typography color="text.primary">{folderItem.name}</Typography>
-            )}
-          </DraggableContainer>
-        </DroppableContainer>
+        <DraggableAndDroppableItem id={`breadcrumb+${folderItem.id}`}>
+          {index !== selectedFolderPath.length - 1 ? (
+            <Link
+              component="button"
+              variant="body2"
+              onClick={() => {}}
+              underline="hover"
+              sx={{ cursor: "pointer" }}
+            >
+              {folderItem.name}
+            </Link>
+          ) : (
+            <Typography color="text.primary">{folderItem.name}</Typography>
+          )}
+        </DraggableAndDroppableItem>
       </div>
     );
   };
