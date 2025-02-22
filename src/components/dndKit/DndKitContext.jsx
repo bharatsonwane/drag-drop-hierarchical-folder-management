@@ -134,10 +134,13 @@ function DndKitContext({ children }) {
     }
     // const activeId = active.id;
     const overId = over.id;
-    let updatedStructure = [...folderStructure];
-    selectedNodes.forEach((nodeItem) => {
-      updatedStructure = moveNodeByIds(updatedStructure, nodeItem.id, overId);
-    });
+    const selectedNodesIds = selectedNodes.map((nodeItem) => nodeItem.id);
+
+    const updatedStructure = moveNodeByIds(
+      folderStructure,
+      overId,
+      selectedNodesIds
+    );
 
     setFolderStructure(updatedStructure);
     handleSetActiveNode(activeFolderDetails.id, updatedStructure);
@@ -147,8 +150,6 @@ function DndKitContext({ children }) {
     // Clear any existing hold timer
     setIsDragging(false);
   };
-
-
 
   const contextValue = {
     folderStructure,

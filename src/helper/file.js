@@ -66,59 +66,64 @@ export function getRealNodeId(nodeId) {
   return nodeId.includes("+") ? nodeId.split("+").pop() : nodeId;
 }
 
-export function moveNodeByIds(json, activeId, overId) {
-  if (!overId) return json; // Check if overId is falsy
-
-  const realActiveId = getRealNodeId(activeId); // Extract last segment if structured
+export function moveNodeByIds(json, overId, activeIds = []) {
+  if (!json || !overId || !activeIds?.[0]) return json; // Check if overId is falsy
   const realOverId = getRealNodeId(overId); // Extract last segment if structured
 
-  if (realActiveId === realOverId) {
-    return json;
-  }
+  let updatedJson = json;
 
-  const data = JSON.parse(JSON.stringify(json)); // Deep clone the JSON data
+  for (const activeId of activeIds) {
+    const realActiveId = getRealNodeId(activeId); // Extract last segment if structured
 
-  let nodeToMove = null;
-  let isNodeMoved = false;
+    if (realActiveId === realOverId) {
+      continue;
+    }
 
-  const findAndRemoveNode = (nodes, parentId = null) => {
-    for (let i = 0; i < nodes.length; i++) {
-      if (nodes[i].id === realActiveId) {
-        nodeToMove = nodes.splice(i, 1)[0];
-        return true;
-      }
-      if (nodes[i].children) {
-        if (findAndRemoveNode(nodes[i].children, nodes[i].id)) {
+    const data = JSON.parse(JSON.stringify(updatedJson)); // Deep clone the JSON data
+
+    let nodeToMove = null;
+    let isNodeMoved = false;
+
+    const findAndRemoveNode = (nodes, parentId = null) => {
+      for (let i = 0; i < nodes.length; i++) {
+        if (nodes[i].id === realActiveId) {
+          nodeToMove = nodes.splice(i, 1)[0];
           return true;
         }
-      }
-    }
-  };
-
-  const findAndAddNode = (nodes) => {
-    for (let i = 0; i < nodes.length; i++) {
-      if (nodes[i].id === realOverId && nodes[i].type === "folder") {
-        if (!nodes[i].children) {
-          nodes[i].children = [];
+        if (nodes[i].children) {
+          if (findAndRemoveNode(nodes[i].children, nodes[i].id)) {
+            return true;
+          }
         }
-        nodes[i].children.push(nodeToMove);
-        isNodeMoved = true;
-        return true;
       }
-      if (nodes[i].children) {
-        if (findAndAddNode(nodes[i].children)) {
+    };
+
+    const findAndAddNode = (nodes) => {
+      for (let i = 0; i < nodes.length; i++) {
+        if (nodes[i].id === realOverId && nodes[i].type === "folder") {
+          if (!nodes[i].children) {
+            nodes[i].children = [];
+          }
+          nodes[i].children.push(nodeToMove);
+          isNodeMoved = true;
           return true;
         }
+        if (nodes[i].children) {
+          if (findAndAddNode(nodes[i].children)) {
+            return true;
+          }
+        }
+      }
+    };
+
+    findAndRemoveNode(data);
+    if (nodeToMove) {
+      findAndAddNode(data);
+      if (isNodeMoved) {
+        updatedJson = data;
       }
     }
-  };
-
-  findAndRemoveNode(data);
-  if (nodeToMove) {
-    findAndAddNode(data);
-    if (isNodeMoved) {
-      return data;
-    }
   }
-  return json;
+
+  return updatedJson;
 }
