@@ -15,7 +15,7 @@ function FolderBreadcrumb({
         }}
       >
         <DraggableAndDroppableItem
-          id={`breadcrumb+${folderItem.id}`}
+          id={`breadcrumb!^|${folderItem.id}`}
           data={folderItem}
         >
           {index !== activeFolderPath.length - 1 ? (

@@ -9,8 +9,8 @@ import {
 } from "@dnd-kit/core";
 
 import {
-  findDetailsById,
-  findPathById,
+  findNodeDetailsById,
+  findNodePathById,
   moveNodeByIds,
 } from "../../helper/file";
 
@@ -39,6 +39,8 @@ function DndKitContext({ children }) {
   const [activeFolderPath, setActiveFolderPath] = useState([]);
   const [activeFolderIdList, setActiveFolderIdList] = useState([]); // Tracks open folders by their IDs
   const [selectedNodes, setSelectedNodes] = useState([]);
+
+  // console.log("activeFolderDetails", activeFolderDetails);
 
   useEffect(() => {
     handleInitialRendering();
@@ -81,10 +83,10 @@ function DndKitContext({ children }) {
   };
 
   const handleSetActiveNode = (id, folderStructureJson = folderStructure) => {
-    const path = findPathById(folderStructureJson, id);
+    const path = findNodePathById(folderStructureJson, id);
     setActiveFolderPath(path);
 
-    const details = findDetailsById(folderStructureJson, id);
+    const details = findNodeDetailsById(folderStructureJson, id);
     setActiveFolderDetails(details);
 
     handleToggleFolder(id, true);
@@ -151,6 +153,17 @@ function DndKitContext({ children }) {
     setIsDragging(false);
   };
 
+  /**@description handleCreateFolder */
+  const handleCreateNewFolder = (folderName) => {
+    console.log("folderName", folderName);
+    const newFolder = {
+      id: `!^|${folderName}`,
+      name: folderName,
+      type: "folder",
+      children: [],
+    };
+  };
+
   const contextValue = {
     folderStructure,
     activeFolderDetails,
@@ -160,6 +173,7 @@ function DndKitContext({ children }) {
     handleToggleFolder,
     handleSetActiveNode,
     handleMultiSelectUnselectNode,
+    handleCreateNewFolder,
   };
 
   return (

@@ -14,13 +14,14 @@ const FolderDragAndDrop = () => {
     selectedNodes,
     handleToggleFolder,
     handleSetActiveNode,
-    handleMultiSelectUnselectNode
+    handleMultiSelectUnselectNode,
+    handleCreateNewFolder,
   } = useContext(DndKitCustomContext);
 
   return (
     <div style={{ display: "flex", gap: 30 }}>
       <div style={{ minWidth: 200 }}>
-        <UploadButton />
+        <UploadButton handleCreateFolder={handleCreateNewFolder} />
         <div>
           {folderStructure.map((node) => (
             <FolderTree

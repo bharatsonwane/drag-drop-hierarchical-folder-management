@@ -1,4 +1,4 @@
-export function findPathById(json, targetId) {
+export function findNodePathById(jsonData, targetId) {
   const path = [];
 
   function traverse(node, currentPath) {
@@ -24,7 +24,7 @@ export function findPathById(json, targetId) {
   }
 
   // Iterate over the top-level nodes in the JSON array
-  for (const item of json) {
+  for (const item of jsonData) {
     if (traverse(item, [])) {
       break;
     }
@@ -33,7 +33,7 @@ export function findPathById(json, targetId) {
   return path;
 }
 
-export function findDetailsById(json, targetId) {
+export function findNodeDetailsById(jsonData, targetId) {
   let result = null;
 
   function traverse(node) {
@@ -53,7 +53,7 @@ export function findDetailsById(json, targetId) {
     return false;
   }
 
-  for (const item of json) {
+  for (const item of jsonData) {
     if (traverse(item)) {
       break;
     }
@@ -63,14 +63,14 @@ export function findDetailsById(json, targetId) {
 }
 
 export function getRealNodeId(nodeId) {
-  return nodeId.includes("+") ? nodeId.split("+").pop() : nodeId;
+  return nodeId.includes("!^|") ? nodeId.split("!^|").pop() : nodeId;
 }
 
-export function moveNodeByIds(json, overId, activeIds = []) {
-  if (!json || !overId || !activeIds?.[0]) return json; // Check if overId is falsy
+export function moveNodeByIds(jsonData, overId, activeIds = []) {
+  if (!jsonData || !overId || !activeIds?.[0]) return jsonData; // Check if overId is falsy
   const realOverId = getRealNodeId(overId); // Extract last segment if structured
 
-  let updatedJson = json;
+  let updatedJson = jsonData;
 
   for (const activeId of activeIds) {
     const realActiveId = getRealNodeId(activeId); // Extract last segment if structured
@@ -127,3 +127,4 @@ export function moveNodeByIds(json, overId, activeIds = []) {
 
   return updatedJson;
 }
+
