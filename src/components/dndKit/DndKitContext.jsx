@@ -32,7 +32,6 @@ function DndKitContext({ children }) {
 
   const [isDragging, setIsDragging] = useState(false);
 
-  ///////////////////////////
   const [folderStructure, setFolderStructure] = useState([
     ...folderStructureData,
   ]);
@@ -40,39 +39,7 @@ function DndKitContext({ children }) {
   const [activeFolderPath, setActiveFolderPath] = useState([]);
   const [activeFolderIdList, setActiveFolderIdList] = useState([]); // Tracks open folders by their IDs
   const [selectedNodes, setSelectedNodes] = useState([]);
-  ///////////////////////////
 
-  const handleDragStart = (event) => {
-    console.log("dragStartEvent", event);
-    if (selectedNodes.length === 0) {
-      handleMultiSelectUnselectNode(event.active.data.current);
-    }
-    setIsDragging(event.active.id);
-    // Clear any existing hold timer
-    clearTimeout(holdTimeoutRef.current);
-  };
-
-  const handleDragOver = (event) => {
-    const { active, over } = event;
-    if (over) {
-      const newDroppableId = over.id;
-      if (currentDroppableRef.current !== newDroppableId) {
-        clearTimeout(holdTimeoutRef.current);
-
-        currentDroppableRef.current = newDroppableId;
-        holdTimeoutRef.current = setTimeout(() => {
-          /** @description call handleDropHold function */
-          handleDropHold(event);
-        }, 500);
-      }
-    } else {
-      /** Clear hold timer if no longer over a droppable area */
-      clearTimeout(holdTimeoutRef.current);
-      currentDroppableRef.current = null;
-    }
-  };
-
-  ////////////////////////////////////////////
   useEffect(() => {
     handleInitialRendering();
     return () => {};
@@ -100,16 +67,6 @@ function DndKitContext({ children }) {
     setActiveFolderIdList(newOpenFolderIdList);
   };
 
-  const handleSetActiveNode = (id, folderStructureJson = folderStructure) => {
-    const path = findPathById(folderStructureJson, id);
-    setActiveFolderPath(path);
-
-    const details = findDetailsById(folderStructureJson, id);
-    setActiveFolderDetails(details);
-
-    handleToggleFolder(id, true);
-  };
-
   const handleMultiSelectUnselectNode = (node) => {
     const isNodeSelected = selectedNodes.some(
       (selectedNode) => selectedNode.id === node.id
@@ -121,6 +78,52 @@ function DndKitContext({ children }) {
     } else {
       setSelectedNodes([...selectedNodes, node]);
     }
+  };
+
+  const handleSetActiveNode = (id, folderStructureJson = folderStructure) => {
+    const path = findPathById(folderStructureJson, id);
+    setActiveFolderPath(path);
+
+    const details = findDetailsById(folderStructureJson, id);
+    setActiveFolderDetails(details);
+
+    handleToggleFolder(id, true);
+  };
+
+  const handleDropHold = (event) => {
+    if (event?.over?.id) {
+      handleToggleFolder(event.over.id, true);
+    }
+  };
+
+  const handleDragOver = (event) => {
+    const { active, over } = event;
+    if (over) {
+      const newDroppableId = over.id;
+      if (currentDroppableRef.current !== newDroppableId) {
+        clearTimeout(holdTimeoutRef.current);
+
+        currentDroppableRef.current = newDroppableId;
+        holdTimeoutRef.current = setTimeout(() => {
+          /** @description call handleDropHold function */
+          handleDropHold(event);
+        }, 500);
+      }
+    } else {
+      /** Clear hold timer if no longer over a droppable area */
+      clearTimeout(holdTimeoutRef.current);
+      currentDroppableRef.current = null;
+    }
+  };
+
+  const handleDragStart = (event) => {
+    console.log("dragStartEvent", event);
+    if (selectedNodes.length === 0) {
+      handleMultiSelectUnselectNode(event.active.data.current);
+    }
+    setIsDragging(event.active.id);
+    // Clear any existing hold timer
+    clearTimeout(holdTimeoutRef.current);
   };
 
   const handleDragEnd = (event) => {
@@ -145,13 +148,7 @@ function DndKitContext({ children }) {
     setIsDragging(false);
   };
 
-  const handleDropHold = (event) => {
-    if (event?.over?.id) {
-      handleToggleFolder(event.over.id, true);
-    }
-  };
 
-  //////////////////////
 
   const contextValue = {
     folderStructure,
