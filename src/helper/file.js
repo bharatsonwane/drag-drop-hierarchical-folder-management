@@ -1,4 +1,4 @@
-export function findNodePathById(jsonData, targetId) {
+export function findNodePathById(schema, targetId) {
   const path = [];
 
   function traverse(node, currentPath) {
@@ -24,7 +24,7 @@ export function findNodePathById(jsonData, targetId) {
   }
 
   // Iterate over the top-level nodes in the JSON array
-  for (const item of jsonData) {
+  for (const item of schema) {
     if (traverse(item, [])) {
       break;
     }
@@ -33,7 +33,7 @@ export function findNodePathById(jsonData, targetId) {
   return path;
 }
 
-export function findNodeDetailsById(jsonData, targetId) {
+export function findNodeDetailsById(schema, targetId) {
   let result = null;
 
   function traverse(node) {
@@ -53,7 +53,7 @@ export function findNodeDetailsById(jsonData, targetId) {
     return false;
   }
 
-  for (const item of jsonData) {
+  for (const item of schema) {
     if (traverse(item)) {
       break;
     }
@@ -66,11 +66,71 @@ export function getRealNodeId(nodeId) {
   return nodeId.includes("!^|") ? nodeId.split("!^|").pop() : nodeId;
 }
 
-export function moveNodeByIds(jsonData, overId, activeIds = []) {
-  if (!jsonData || !overId || !activeIds?.[0]) return jsonData; // Check if overId is falsy
+export const removeNodeById = (schema, targetId) => {
+  const updatedSchema = JSON.parse(JSON.stringify(schema)); // Deep clone the JSON data
+
+  let removedNode = null;
+
+  const removeNodeRecursion = (nodes) => {
+    for (let i = 0; i < nodes.length; i++) {
+      if (nodes[i].id === targetId) {
+        removedNode = nodes.splice(i, 1);
+        return true;
+      }
+      if (nodes[i].children && removeNodeRecursion(nodes[i].children)) {
+        return true;
+      }
+    }
+  };
+
+  removeNodeRecursion(updatedSchema);
+
+  return { updatedSchema, removedNode };
+};
+
+export const addNodeById = (schema, targetId, nodeToAdd) => {
+  const updatedSchema = JSON.parse(JSON.stringify(schema)); // Deep clone the JSON data
+  let errorMessage = "";
+
+  const addNodeRecursion = (nodes) => {
+    for (let node of nodes) {
+      if (node.id === targetId && node.type === "folder") {
+        node.children = node.children || [];
+
+        const isDuplicate = node.children.some(
+          (child) =>
+            (child.type === nodeToAdd.type && child.name === nodeToAdd.name) ||
+            child.id === nodeToAdd.id
+        );
+
+        if (isDuplicate) {
+          errorMessage = `${
+            nodeToAdd.type === "folder" ? "Folder" : "File"
+          } already exists with the name "${nodeToAdd.name}"`;
+          return false;
+        }
+
+        node.children.push(nodeToAdd);
+        return true;
+      }
+
+      if (node.children && addNodeRecursion(node.children)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const isNodeAdded = addNodeRecursion(updatedSchema);
+
+  return { updatedSchema, isNodeAdded, errorMessage };
+};
+
+export function moveNodeByIds(schema, overId, activeIds = []) {
+  if (!schema || !overId || !activeIds?.[0]) return schema; // Check if overId is falsy
   const realOverId = getRealNodeId(overId); // Extract last segment if structured
 
-  let updatedJson = jsonData;
+  let updatedSchema = schema;
 
   for (const activeId of activeIds) {
     const realActiveId = getRealNodeId(activeId); // Extract last segment if structured
@@ -79,52 +139,23 @@ export function moveNodeByIds(jsonData, overId, activeIds = []) {
       continue;
     }
 
-    const data = JSON.parse(JSON.stringify(updatedJson)); // Deep clone the JSON data
+    // remove the node from the original position
+    const { updatedSchema: updatedSchemaAfterNodeRemoved, removedNode } =
+      removeNodeById(updatedSchema, realActiveId);
 
-    let nodeToMove = null;
-    let isNodeMoved = false;
+    if (!removedNode) {
+      continue;
+    }
 
-    const findAndRemoveNode = (nodes, parentId = null) => {
-      for (let i = 0; i < nodes.length; i++) {
-        if (nodes[i].id === realActiveId) {
-          nodeToMove = nodes.splice(i, 1)[0];
-          return true;
-        }
-        if (nodes[i].children) {
-          if (findAndRemoveNode(nodes[i].children, nodes[i].id)) {
-            return true;
-          }
-        }
-      }
-    };
+    // add the node to the new position
+    const { updatedSchema: updatedSchemaAfterNodeAdded, isNodeAdded } =
+      addNodeById(updatedSchemaAfterNodeRemoved, realOverId, removedNode[0]);
 
-    const findAndAddNode = (nodes) => {
-      for (let i = 0; i < nodes.length; i++) {
-        if (nodes[i].id === realOverId && nodes[i].type === "folder") {
-          if (!nodes[i].children) {
-            nodes[i].children = [];
-          }
-          nodes[i].children.push(nodeToMove);
-          isNodeMoved = true;
-          return true;
-        }
-        if (nodes[i].children) {
-          if (findAndAddNode(nodes[i].children)) {
-            return true;
-          }
-        }
-      }
-    };
-
-    findAndRemoveNode(data);
-    if (nodeToMove) {
-      findAndAddNode(data);
-      if (isNodeMoved) {
-        updatedJson = data;
-      }
+    // Update the schema if the node was successfully moved
+    if (isNodeAdded) {
+      updatedSchema = updatedSchemaAfterNodeAdded;
     }
   }
 
-  return updatedJson;
+  return updatedSchema;
 }
-

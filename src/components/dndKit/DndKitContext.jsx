@@ -9,6 +9,7 @@ import {
 } from "@dnd-kit/core";
 
 import {
+  addNodeById,
   findNodeDetailsById,
   findNodePathById,
   moveNodeByIds,
@@ -155,13 +156,25 @@ function DndKitContext({ children }) {
 
   /**@description handleCreateFolder */
   const handleCreateNewFolder = (folderName) => {
-    console.log("folderName", folderName);
     const newFolder = {
-      id: `!^|${folderName}`,
+      id: `folder_${folderName}`,
       name: folderName,
       type: "folder",
+      createdBy: "",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
       children: [],
     };
+
+    const { updatedSchema, isNodeAdded } = addNodeById(
+      folderStructure,
+      activeFolderDetails.id,
+      newFolder
+    );
+
+    if (isNodeAdded) {
+      setFolderStructure(updatedSchema);
+    }
   };
 
   const contextValue = {

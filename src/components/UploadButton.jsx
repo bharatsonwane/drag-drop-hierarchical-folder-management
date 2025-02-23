@@ -40,7 +40,7 @@ function UploadButton({
     setAnchorEl(null);
   };
 
-  const handleCancelCreateFolder = () => {
+  const handleReset = () => {
     setOpenModalName("");
     setFolderName("");
   };
@@ -127,12 +127,12 @@ function UploadButton({
             }}
           />
           <Box sx={{ mt: 2 }}>
-            <Button onClick={() => handleCancelCreateFolder()}>Cancel</Button>
+            <Button onClick={() => handleReset()}>Cancel</Button>
             <Button
               onClick={() => {
                 handleCreateFolder(folderName);
+                handleReset();
               }}
-              autoFocus
             >
               Create
             </Button>
