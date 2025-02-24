@@ -40,10 +40,9 @@ function TableRowView({
           <span>{file.name}</span>
         </TableCell>
         <TableCell>{file.size}</TableCell>
-        <TableCell>{file.owner}</TableCell>
-        <TableCell>{file.created}</TableCell>
-        <TableCell>{file.modified}</TableCell>
-        <TableCell>{file.projectList?.join(", ")}</TableCell>
+        <TableCell>{file.createdBy}</TableCell>
+        <TableCell>{file.createdAt}</TableCell>
+        <TableCell>{file.createdAt}</TableCell>
         <TableCell>
           <LongMenu />
         </TableCell>

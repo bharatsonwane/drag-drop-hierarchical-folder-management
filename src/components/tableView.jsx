@@ -23,10 +23,9 @@ const TableView = ({
           <TableRow>
             <TableCell>Name</TableCell>
             <TableCell>Size</TableCell>
-            <TableCell>Owner</TableCell>
+            <TableCell>Created By</TableCell>
             <TableCell>Created</TableCell>
             <TableCell>Modified</TableCell>
-            <TableCell>Project list</TableCell>
             <TableCell>
               <MoreVert />
             </TableCell>
