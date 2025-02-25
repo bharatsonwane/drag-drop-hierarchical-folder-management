@@ -74,7 +74,7 @@ export const removeNodeById = (schema, targetId) => {
   const removeNodeRecursion = (nodes) => {
     for (let i = 0; i < nodes.length; i++) {
       if (nodes[i].id === targetId) {
-        removedNode = nodes.splice(i, 1);
+        removedNode = nodes.splice(i, 1)[0];
         return true;
       }
       if (nodes[i].children && removeNodeRecursion(nodes[i].children)) {
@@ -84,7 +84,6 @@ export const removeNodeById = (schema, targetId) => {
   };
 
   removeNodeRecursion(updatedSchema);
-
   return { updatedSchema, removedNode };
 };
 
@@ -149,7 +148,7 @@ export function moveNodeByIds(schema, overId, activeIds = []) {
 
     // add the node to the new position
     const { updatedSchema: updatedSchemaAfterNodeAdded, isNodeAdded } =
-      addNodeById(updatedSchemaAfterNodeRemoved, realOverId, removedNode[0]);
+      addNodeById(updatedSchemaAfterNodeRemoved, realOverId, removedNode);
 
     // Update the schema if the node was successfully moved
     if (isNodeAdded) {
