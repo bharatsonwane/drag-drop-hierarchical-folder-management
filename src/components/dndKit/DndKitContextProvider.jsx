@@ -19,7 +19,7 @@ import folderStructureData from "../../data/data";
 
 export const DndKitCustomContext = createContext();
 
-function DndKitContext({ children }) {
+function DndKitContextProvider({ children }) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -211,4 +211,4 @@ function DndKitContext({ children }) {
   );
 }
 
-export default DndKitContext;
+export default DndKitContextProvider;

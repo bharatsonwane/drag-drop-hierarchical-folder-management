@@ -3,7 +3,7 @@ import TableView from "../../components/tableView";
 import FolderTree from "./components/FolderTree";
 import FolderBreadcrumb from "./components/FolderBreadcrumb";
 import { useContext } from "react";
-import { DndKitCustomContext } from "../../components/dndKit/DndKitContext";
+import { DndKitCustomContext } from "../../components/dndKit/DndKitContextProvider";
 
 const FolderDragAndDrop = () => {
   const {
