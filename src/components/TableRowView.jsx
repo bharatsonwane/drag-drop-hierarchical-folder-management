@@ -1,7 +1,7 @@
 import { Folder } from "@mui/icons-material";
 import { TableCell, TableRow } from "@mui/material";
 import LongMenu from "./MenuItem";
-import DraggableItem from "./dndKit/DraggableItem";
+import DraggableElement from "./dndKit/DraggableElement";
 
 function TableRowView({
   index,
@@ -15,7 +15,7 @@ function TableRowView({
   );
 
   return (
-    <DraggableItem id={`table!^|${file.id}`} data={file} hasDragOverlay={true}>
+    <DraggableElement id={`table!^|${file.id}`} info={file} hasDragOverlay={true}>
       <TableRow
         key={index}
         // style={{ overflowX: "auto" }}
@@ -47,7 +47,7 @@ function TableRowView({
           <LongMenu />
         </TableCell>
       </TableRow>
-    </DraggableItem>
+    </DraggableElement>
   );
 }
 

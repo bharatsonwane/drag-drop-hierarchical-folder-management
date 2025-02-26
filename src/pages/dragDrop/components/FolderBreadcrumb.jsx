@@ -1,6 +1,6 @@
 import { Breadcrumbs, Link, Typography } from "@mui/material";
 import { NavigateNext } from "@mui/icons-material";
-import DraggableAndDroppableItem from "../../../components/dndKit/DraggableAndDroppableItem";
+import DraggableAndDroppableElement from "../../../components/dndKit/DraggableAndDroppableElement";
 
 function FolderBreadcrumb({
   activeFolderPath = [],
@@ -14,9 +14,9 @@ function FolderBreadcrumb({
           handleSetActiveNode(folderItem.id);
         }}
       >
-        <DraggableAndDroppableItem
+        <DraggableAndDroppableElement
           id={`breadcrumb!^|${folderItem.id}`}
-          data={folderItem}
+          info={folderItem}
         >
           {index !== activeFolderPath.length - 1 ? (
             <Link
@@ -31,7 +31,7 @@ function FolderBreadcrumb({
           ) : (
             <Typography color="text.primary">{folderItem.name}</Typography>
           )}
-        </DraggableAndDroppableItem>
+        </DraggableAndDroppableElement>
       </div>
     );
   };

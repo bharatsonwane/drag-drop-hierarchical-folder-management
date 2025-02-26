@@ -1,8 +1,17 @@
 import React, { forwardRef } from "react";
 import { useDroppable } from "@dnd-kit/core";
 
-const DroppableItem = ({ id, data, children }, ref) => {
-  const { setNodeRef, isOver } = useDroppable({ id: id, data: data });
+const DroppableElement = (
+  { id, allowedTypes = ["type1"], info, children },
+  ref
+) => {
+  const { setNodeRef, isOver } = useDroppable({
+    id: id,
+    data: {
+      allowedTypes: allowedTypes,
+      info: info,
+    },
+  });
 
   const itemStyle = {
     padding: "1px",
@@ -34,4 +43,4 @@ const DroppableItem = ({ id, data, children }, ref) => {
   );
 };
 
-export default forwardRef(DroppableItem);
+export default forwardRef(DroppableElement);

@@ -2,9 +2,12 @@ import React, { forwardRef } from "react";
 import { CSS } from "@dnd-kit/utilities";
 import { useDraggable } from "@dnd-kit/core";
 
-const DraggableItem = ({ id, data, children, hasDragOverlay }, ref) => {
+const DraggableElement = (
+  { id, type = "type1", info, children, hasDragOverlay },
+  ref
+) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useDraggable({ id: id, data: data });
+    useDraggable({ id: id, data: { type: type, info: info } });
 
   const itemStyle = {
     transform: hasDragOverlay ? "unset" : CSS.Transform.toString(transform),
@@ -37,4 +40,4 @@ const DraggableItem = ({ id, data, children, hasDragOverlay }, ref) => {
   );
 };
 
-export default forwardRef(DraggableItem);
+export default forwardRef(DraggableElement);
