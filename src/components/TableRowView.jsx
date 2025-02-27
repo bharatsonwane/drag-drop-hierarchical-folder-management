@@ -15,7 +15,7 @@ function TableRowView({
   );
 
   return (
-    <DraggableElement id={`table!^|${file.id}`} info={file} hasDragOverlay={true}>
+    <DraggableElement id={`table!^|${file.id}`} elementData={file} hasDragOverlay={true}>
       <TableRow
         key={index}
         // style={{ overflowX: "auto" }}

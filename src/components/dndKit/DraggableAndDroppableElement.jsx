@@ -3,7 +3,13 @@ import { useDraggable, useDroppable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 
 const DraggableAndDroppableElement = (
-  { id, type = "type1", allowedTypes = ["type1"], info, children },
+  {
+    id,
+    dndType = "type1",
+    allowedDndTypes = ["type1"],
+    elementData = {},
+    children,
+  },
   ref
 ) => {
   const {
@@ -15,16 +21,16 @@ const DraggableAndDroppableElement = (
   } = useDraggable({
     id,
     data: {
-      type: type,
-      info: info,
+      dndType: dndType,
+      ...elementData,
     },
   });
 
   const { setNodeRef: setDroppableNodeRef, isOver } = useDroppable({
     id,
     data: {
-      allowedTypes: allowedTypes,
-      info: info,
+      allowedDndTypes: allowedDndTypes,
+      ...elementData,
     },
   });
 

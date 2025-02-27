@@ -2,9 +2,9 @@ import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-const SortableElement = ({ id, info, children }) => {
+const SortableElement = ({ id, elementData = {}, children }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isOver } =
-    useSortable({ id: id, data: { info: info } });
+    useSortable({ id: id, data: { ...elementData } });
 
   const itemStyle = {
     transform: CSS.Transform.toString(transform),

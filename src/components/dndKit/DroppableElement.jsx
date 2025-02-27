@@ -2,14 +2,14 @@ import React, { forwardRef } from "react";
 import { useDroppable } from "@dnd-kit/core";
 
 const DroppableElement = (
-  { id, allowedTypes = ["type1"], info, children },
+  { id, allowedDndTypes = ["type1"], elementData = {}, children },
   ref
 ) => {
   const { setNodeRef, isOver } = useDroppable({
     id: id,
     data: {
-      allowedTypes: allowedTypes,
-      info: info,
+      allowedDndTypes: allowedDndTypes,
+      ...elementData,
     },
   });
 

@@ -30,9 +30,9 @@ const FolderDragAndDrop = () => {
       handleDragStart(event);
     },
     onDragOver(event) {
-      const activeType = event.active.data.current.type;
-      const allowedTypes = event.over.data.current.allowedTypes;
-      if (allowedTypes.includes(activeType)) {
+      const activeType = event.active?.data.current.type;
+      const allowedDndTypes = event.over?.data.current.allowedDndTypes;
+      if (allowedDndTypes?.includes(activeType)) {
         handleDragOver(event);
       }
     },
@@ -119,7 +119,7 @@ const FolderDragAndDrop = () => {
 
   const handleDragStart = (event) => {
     if (selectedNodes.length === 0) {
-      handleMultiSelectUnselectNode(event.active.data.current.info);
+      handleMultiSelectUnselectNode(event.active.data.current);
     }
     setIsDragging(event.active.id);
     // Clear any existing hold timer
@@ -172,6 +172,8 @@ const FolderDragAndDrop = () => {
       setFolderStructure(updatedSchema);
     }
   };
+
+  console.log("selectedNodes", selectedNodes)
 
   return (
     <div style={{ display: "flex", gap: 30 }}>

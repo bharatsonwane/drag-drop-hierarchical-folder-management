@@ -3,11 +3,11 @@ import { CSS } from "@dnd-kit/utilities";
 import { useDraggable } from "@dnd-kit/core";
 
 const DraggableElement = (
-  { id, type = "type1", info, children, hasDragOverlay },
+  { id, dndType = "type1", elementData = {}, children, hasDragOverlay },
   ref
 ) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useDraggable({ id: id, data: { type: type, info: info } });
+    useDraggable({ id: id, data: { dndType: dndType, ...elementData } });
 
   const itemStyle = {
     transform: hasDragOverlay ? "unset" : CSS.Transform.toString(transform),
