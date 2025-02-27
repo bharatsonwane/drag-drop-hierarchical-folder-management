@@ -26,18 +26,21 @@ const FolderDragAndDrop = () => {
 
   useDndMonitor({
     onDragStart(event) {
-      console.log("event", event);
       handleDragStart(event);
     },
     onDragOver(event) {
-      const activeType = event.active?.data.current.type;
+      const activeType = event.active?.data.current.dndType;
       const allowedDndTypes = event.over?.data.current.allowedDndTypes;
       if (allowedDndTypes?.includes(activeType)) {
         handleDragOver(event);
       }
     },
     onDragEnd(event) {
-      handleDragEnd(event);
+      const activeType = event.active?.data.current.dndType;
+      const allowedDndTypes = event.over?.data.current.allowedDndTypes;
+      if (allowedDndTypes?.includes(activeType)) {
+        handleDragEnd(event);
+      }
     },
   });
 
@@ -172,8 +175,6 @@ const FolderDragAndDrop = () => {
       setFolderStructure(updatedSchema);
     }
   };
-
-  console.log("selectedNodes", selectedNodes)
 
   return (
     <div style={{ display: "flex", gap: 30 }}>
