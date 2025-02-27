@@ -50,7 +50,6 @@ const FolderDragAndDrop = () => {
     const initialId = folderStructureData[0].id;
     setFolderStructure(folderStructureData);
     handleSetActiveNode(initialId, folderStructureData);
-    handleToggleFolder(initialId);
   };
 
   const handleToggleFolder = (id, isOpenMandatory) => {
