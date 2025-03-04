@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { DragOverlay, useDndMonitor } from "@dnd-kit/core";
 import UploadButton from "../../components/UploadButton";
 import TableView from "../../components/tableView";
@@ -19,10 +19,20 @@ const FolderDragAndDrop = () => {
   const [isDragging, setIsDragging] = useState(false);
 
   const [folderStructure, setFolderStructure] = useState([]);
-  const [activeFolderDetails, setActiveFolderDetails] = useState({});
-  const [activeFolderPath, setActiveFolderPath] = useState([]);
-  const [activeFolderIdList, setActiveFolderIdList] = useState([]); // Tracks open folders by their IDs
+  const [activeFolderId, setActiveFolderId] = useState(null);
+  const [expandedFolderIdList, setExpandedFolderIdList] = useState([]); // Tracks open folders by their IDs
+
   const [selectedNodes, setSelectedNodes] = useState([]);
+
+  const activeFolderDetails = (() => {
+    const details = findNodeDetailsById(folderStructure, activeFolderId) || {};
+    return details;
+  })();
+
+  const activeFolderPath = (() => {
+    const path = findNodePathById(folderStructure, activeFolderDetails.id);
+    return path;
+  })();
 
   useDndMonitor({
     onDragStart(event) {
@@ -59,16 +69,16 @@ const FolderDragAndDrop = () => {
     let newOpenFolderIdList = [];
 
     if (isOpenMandatory) {
-      newOpenFolderIdList = activeFolderIdList.includes(id)
-        ? [...activeFolderIdList]
-        : [...activeFolderIdList, id];
+      newOpenFolderIdList = expandedFolderIdList.includes(id)
+        ? [...expandedFolderIdList]
+        : [...expandedFolderIdList, id];
     } else {
-      newOpenFolderIdList = activeFolderIdList.includes(id)
-        ? activeFolderIdList.filter((folderId) => folderId !== id)
-        : [...activeFolderIdList, id];
+      newOpenFolderIdList = expandedFolderIdList.includes(id)
+        ? expandedFolderIdList.filter((folderId) => folderId !== id)
+        : [...expandedFolderIdList, id];
     }
 
-    setActiveFolderIdList(newOpenFolderIdList);
+    setExpandedFolderIdList(newOpenFolderIdList);
   };
 
   const handleMultiSelectUnselectNode = (node) => {
@@ -85,11 +95,7 @@ const FolderDragAndDrop = () => {
   };
 
   const handleSetActiveNode = (id, folderStructureJson = folderStructure) => {
-    const path = findNodePathById(folderStructureJson, id);
-    setActiveFolderPath(path);
-
-    const details = findNodeDetailsById(folderStructureJson, id);
-    setActiveFolderDetails(details);
+    setActiveFolderId(id);
 
     handleToggleFolder(id, true);
   };
@@ -185,7 +191,7 @@ const FolderDragAndDrop = () => {
             <FolderTree
               key={node.id}
               node={node}
-              activeFolderIdList={activeFolderIdList}
+              expandedFolderIdList={expandedFolderIdList}
               activeFolderPath={activeFolderPath}
               handleToggleFolder={handleToggleFolder}
               handleSetActiveNode={handleSetActiveNode}

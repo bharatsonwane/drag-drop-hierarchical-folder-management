@@ -10,7 +10,7 @@ import store from './redux/store.js'
 
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
     <Provider store={store}>
       <BrowserRouter>
         <DndProvider backend={HTML5Backend}>
@@ -18,5 +18,6 @@ createRoot(document.getElementById('root')).render(
         </DndProvider>
       </BrowserRouter>
     </Provider>
-  </StrictMode>,
+  // </StrictMode>
+  ,
 )
