@@ -1,39 +1,52 @@
-import React, { useState } from "react";
-import { useDrop } from "react-dnd";
-import { Button, Input } from "@mui/material";
+import React, { useState } from 'react';
 
-const FileUpload = ({ folderId, onFileUpload }) => {
-  const [files, setFiles] = useState([]);
+const FileUpload = () => {
+  const [directoryStructure, setDirectoryStructure] = useState(null);
 
-  const [{ isOver }, drop] = useDrop(() => ({
-    accept: "FILE", // Accept files
-    drop: (item) => handleDrop(item),
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-    }),
-  }));
+  const handleDirectoryPicker = async () => {
+    try {
+      const directoryHandle = await window.showDirectoryPicker();
+      const root = {
+        id: `folder_${Date.now()}`,
+        name: directoryHandle.name,
+        type: 'folder',
+        children: [],
+        folderId: Date.now(),
+      };
 
-  const handleDrop = (item) => {
-    onFileUpload(item.file, folderId);
-  };
+      const traverseDirectory = async (dirHandle, parent) => {
+        for await (const entry of dirHandle.values()) {
+          const entryId = `folder_${Date.now()}`;
+          const entryNode = {
+            id: entryId,
+            name: entry.name,
+            type: entry.kind,
+            children: [],
+            folderId: Date.now(),
+          };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    setFiles([file]);
-    onFileUpload(file, folderId); // Upload the file to the folder
+          if (entry.kind === 'file') {
+            const file = await entry.getFile();
+            entryNode.file = file;
+          } else if (entry.kind === 'directory') {
+            await traverseDirectory(entry, entryNode);
+          }
+
+          parent.children.push(entryNode);
+        }
+      };
+
+      await traverseDirectory(directoryHandle, root);
+      setDirectoryStructure(root);
+    } catch (error) {
+      console.error('Error accessing directory:', error);
+    }
   };
 
   return (
-    <div
-      ref={drop}
-      style={{
-        padding: "10px",
-        border: isOver ? "2px dashed #007bff" : "2px dashed #ccc",
-      }}
-    >
-      <h3>Upload a File</h3>
-      <Input type="file" onChange={handleFileChange} />
-      <div>{files.length > 0 && <span>{files[0].name}</span>}</div>
+    <div>
+      <button onClick={handleDirectoryPicker}>Select Folder</button>
+      <pre>{JSON.stringify(directoryStructure, null, 2)}</pre>
     </div>
   );
 };
