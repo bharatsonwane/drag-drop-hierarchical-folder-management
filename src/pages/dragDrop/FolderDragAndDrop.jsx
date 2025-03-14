@@ -11,6 +11,7 @@ import {
   moveNodeByIds,
 } from "../../helper/file";
 import folderStructureData from "../../data/data";
+import FileUpload from "../../components/FileUpload";
 
 const FolderDragAndDrop = () => {
   const holdTimeoutRef = useRef(null);
@@ -211,6 +212,7 @@ const FolderDragAndDrop = () => {
             selectedNodes={selectedNodes}
             handleMultiSelectUnselectNode={handleMultiSelectUnselectNode}
           />
+          <FileUpload />
         </div>
       </div>
       {isDragging && (
